@@ -94,15 +94,21 @@ const router = express.Router();
 // So param middleware is middleware that only runs for certain parameters, so basically, when we have a certain parameter in our URL.
 // so basically the parameter for which this middleware is gonna run, and it's called id, and then of course our actual middleware function. And as usual, we have access to the request and to the response object, and then senses a middleware function also to the next function, right? Now in a param middleware function, we actually get access to a fourth argument and that one is the value of the parameter in question. So we usually call that one val, which stands for value.
 // and this val here is what will actually gonna hald the id parameter
-router.param('id', (req, res, next, val) => {
-  console.log(`Tour id is ${val}`);
-  next();
-});
+router.param('id', tourController.checkID);
 // so this middleware function is only defined in our tourroutes so it will not work for the id of the users route
+
+// CREATE A CHECKBODY MIDDLEWARE
+// CHECK IF THE BODY CONTAINS THE NAME AND THE PRICE.
+// if not send back 400 status code( bad request ) from the client
+// Add it to the post handler stack
+// So its very easy. Lets say our function is called middleware and so what you have to do is to simply add that function here before the createTour handler that will ultimately create the tour. Okay? So this way when we have a post request for this route, it will then run this middleware first and only then the createTour.
 router
   .route('/')
   .get(tourController.getAllTours)
-  .post(tourController.createTour);
+  .post(tourController.checkBody, tourController.createTour);
+// .post(tourController.createTour);
+// (Man) So in this lecture, you're gonna learn how to chain multiple middleware functions for the same route. So up until this point, whenever we wanted to define a middleware, we only ever passed one middleware function. So for example here, for handling this post request, well we only passed in this middleware function which is our createTour handler. Okay? And so that's the only function that is gonna be called whenever we get a post request. Right? But lets now say that we want to actually run multiple middleware functions. Now you might ask "Why would we want to do that?". Well we might, for example, run a middleware before createTour here to actually check the data that is coming in the body. Right? So a bit similar to what we had before. So we did this check ID middleware before in order to check if the ID is actually valid and doing so outside of the actual route handlers so that they are only concerned with getting, updating, or deleting a tour.
+// And so here, in this specific example with post, we might want to do the same thing. So as I said, we might want to check if request.buddy actually contains the data that we want for the tour. Okay? And so lets do that.
 router
   .route('/:id')
   .get(tourController.getTour)
