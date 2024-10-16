@@ -1,8 +1,8 @@
-const fs = require('fs');
-const express = require('express');
+const fs = require("fs");
+const express = require("express");
 // importing our routehandler from tourController
 // so currently we were in the routes folder so we go one level up ../
-const tourController = require('./../controllers/tourController');
+const tourController = require("./../controllers/tourController");
 // const {getAllTours, getTour, updateTour, createTour, deleteTour} = require('./../controllers/tourController');
 
 // Now, remember that when we export data from a file using the exports object. So just like we did here. When we then import everything into one object, then all of the data that was on exports is now gonna be on tourController. And so we will have tourController.getAllTours .createTours.getTour, and really, all of these, okay? So this object here will be the equivalent of the exports that we have here. Remember that? And so, it's really simple. All I have to do now is to create tourController., and that's it. Now I could have also used the structuring, which I also showed you before. So just to demonstrate, I could have used it like this, and then specified the exact same names that we have here. So getAllTours, and then createTour, and all of these, and then I could have used them directly here without having to write tourController, and dot. Okay, but I actually like it like this, and I see no problem of having it like this. So it makes it nicely visible that all of these functions here actually come from this tourController module.
@@ -94,7 +94,7 @@ const router = express.Router();
 // So param middleware is middleware that only runs for certain parameters, so basically, when we have a certain parameter in our URL.
 // so basically the parameter for which this middleware is gonna run, and it's called id, and then of course our actual middleware function. And as usual, we have access to the request and to the response object, and then senses a middleware function also to the next function, right? Now in a param middleware function, we actually get access to a fourth argument and that one is the value of the parameter in question. So we usually call that one val, which stands for value.
 // and this val here is what will actually gonna hald the id parameter
-router.param('id', tourController.checkID);
+// router.param('id', tourController.checkID);
 // so this middleware function is only defined in our tourroutes so it will not work for the id of the users route
 
 // CREATE A CHECKBODY MIDDLEWARE
@@ -103,14 +103,15 @@ router.param('id', tourController.checkID);
 // Add it to the post handler stack
 // So its very easy. Lets say our function is called middleware and so what you have to do is to simply add that function here before the createTour handler that will ultimately create the tour. Okay? So this way when we have a post request for this route, it will then run this middleware first and only then the createTour.
 router
-  .route('/')
+  .route("/")
   .get(tourController.getAllTours)
-  .post(tourController.checkBody, tourController.createTour);
+  .post(tourController.createTour);
+// .post(tourController.checkBody, tourController.createTour);
 // .post(tourController.createTour);
 // (Man) So in this lecture, you're gonna learn how to chain multiple middleware functions for the same route. So up until this point, whenever we wanted to define a middleware, we only ever passed one middleware function. So for example here, for handling this post request, well we only passed in this middleware function which is our createTour handler. Okay? And so that's the only function that is gonna be called whenever we get a post request. Right? But lets now say that we want to actually run multiple middleware functions. Now you might ask "Why would we want to do that?". Well we might, for example, run a middleware before createTour here to actually check the data that is coming in the body. Right? So a bit similar to what we had before. So we did this check ID middleware before in order to check if the ID is actually valid and doing so outside of the actual route handlers so that they are only concerned with getting, updating, or deleting a tour.
 // And so here, in this specific example with post, we might want to do the same thing. So as I said, we might want to check if request.buddy actually contains the data that we want for the tour. Okay? And so lets do that.
 router
-  .route('/:id')
+  .route("/:id")
   .get(tourController.getTour)
   .patch(tourController.updateTour)
   .delete(tourController.deleteTour);
